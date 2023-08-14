@@ -15,9 +15,9 @@ describe("GET: /api/topics", () => {
         .expect(200)
         .then(({ body : { topics } }) => {
             expect(topics.length).toBe(3);
-            topics.forEach((item) => {
-                expect(item).toHaveProperty('description')
-                expect(item).toHaveProperty('slug')
+            topics.forEach((topic) => {
+                expect(topic).toHaveProperty('description')
+                expect(topic).toHaveProperty('slug')
             })
         })
     })
