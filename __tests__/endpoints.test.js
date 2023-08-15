@@ -7,10 +7,10 @@ describe('/api', () => {
         request(app)
             .get('/api')
             .expect(200)
-            .end((err, response) => {
-                if (err) return done(err);
-                expect(response.body).toEqual(endpointsData);
+            .then((response) => {
+                const body = response.body;
+                expect(body.endpoints).toEqual(endpointsData);
                 done();
-            });
+        })
     });
 });
