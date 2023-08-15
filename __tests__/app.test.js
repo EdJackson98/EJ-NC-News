@@ -2,6 +2,7 @@ const app = require('../app');
 const request = require('supertest');
 const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
+const endpointsData = require('../endpoints.json');
 
 const {topicData, articleData, commentData, userData} = require('../db/data/test-data/');
 
@@ -29,6 +30,19 @@ describe("GET: /api/topics", () => {
             expect(response.status).toBe(404)
         })
     })
+});
+
+describe('/api', () => {
+    test('should return an object containing all available endpoints', (done) => {
+        request(app)
+            .get('/api')
+            .expect(200)
+            .then((response) => {
+                const body = response.body;
+                expect(body.endpoints).toEqual(endpointsData);
+                done();
+        })
+    });
 });
 
 describe("GET: /api/articles/:article_id", () => {

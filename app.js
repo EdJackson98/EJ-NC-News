@@ -2,9 +2,9 @@ const express = require("express");
 const app = express();
 
 const{ getTopics } = require("./controllers/topics.controller");
-
 const{ getArticleByID } = require("./controllers/articles.controller")
 const{ getEndpoints }= require('./controllers/endpoints.controller');
+
 const {
     handleCustomErrors,
     handlePsqlErrors,
