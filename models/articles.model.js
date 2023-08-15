@@ -14,7 +14,3 @@ exports.fetchArticleByID = (article_id) => {
         return article
         });
 }
-
-exports.fetchAllArticles = () => {
-    return db.query(`SELECT * FROM articles;`)
-}
