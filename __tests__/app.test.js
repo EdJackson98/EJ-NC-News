@@ -72,3 +72,17 @@ describe("GET: /api/articles/:article_id", () => {
         })
     })
 })
+
+describe('/api/articles', () => {
+    test('GET:200 sends an array of article objects with the correct keys', () => {
+      return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then((response) => {
+          expect(response.body.articles).toEqual(expect.any(Array));
+          expect(Object.keys(response.body.articles[0])).toEqual(
+            expect.arrayContaining(['author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'article_img_url', 'comment_count'])
+          );
+        });
+    });
+})
