@@ -1,6 +1,11 @@
-const { getEndpointsData } = require('../models/endpoints.model');
+const endpoints = require('../endpoints.json')
+const fs = require('fs/promises')
 
-exports.getApiInfo = (req, res) => {
-    const endpointsData = getEndpointsData();
-    res.json(endpointsData);
-};
+exports.getEndpoints = (req, res) => {
+    fs.readFile(`${__dirname}/../endpoints.json`, 'utf-8')
+    .then((data) => {
+        const parsedEndpoints = JSON.parse(data)
+        res.status(200).send({endpoints: parsedEndpoints})
+    })
+}
+
