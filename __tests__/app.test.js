@@ -96,3 +96,20 @@ describe('/api/articles', () => {
         })
     })
 })
+
+describe.skip('POST /api/articles/:article_id/comments', () => {
+    test('adds a comment with corresponding article_id', () => {
+        const testComment = {
+            username: 'test_user',
+            body: 'Test comment',
+        };
+        return request(app)
+            .post('/api/articles/1/comments')
+            .send(testComment)
+            .expect(201)
+            .then((response) => {
+                expect(response.body.comment.author).toBe(testComment.username);
+                expect(response.body.comment.body).toBe(testComment.body);
+            });
+    });
+});
