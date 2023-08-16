@@ -111,5 +111,13 @@ describe('/api/teams/:article_id/comments', () => {
             expect(response.body.msg).toBe('Invalid ID');
           });
     })
-    // skiptest('Comments should be ordered by age, most recent comments first')
+    test('comments should return, ordered by created_at, ascendingly', () => {
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then(({body}) => {
+            const { comments } = body
+            expect(comments).toBeSortedBy('created_at', {ascendingly: true})
+        })
+    })
   });
