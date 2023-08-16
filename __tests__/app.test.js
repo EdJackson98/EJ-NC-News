@@ -72,3 +72,44 @@ describe("GET: /api/articles/:article_id", () => {
         })
     })
 })
+
+describe('/api/teams/:article_id/comments', () => {
+    test('GET:200 sends an array of comments to the user by article_id', () => {
+      return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then((response) => {
+          expect(response.body.comments).toEqual(expect.any(Array));
+          expect(Object.keys(response.body.comments[0])).toEqual(
+            expect.arrayContaining([
+              'comment_id',
+              'votes',
+              'created_at',
+              'author',
+              'body',
+              'article_id'
+            ])
+          );
+          response.body.comments.forEach((comment) => {
+            expect(comment.article_id).toBe(1);
+          });
+        });
+    });
+    test('GET:404 sends an appropriate error message when given a valid but non-existent id', () => {
+      return request(app)
+        .get('/api/articles/999/comments')
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toBe('No article found for article id: 999');
+        });
+    });
+    test('GET:400 sends an appropriate error message when given an invalid ID', () => {
+        return request(app)
+        .get('/api/articles/banana/comments')
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Invalid ID');
+          });
+    })
+    // skiptest('Comments should be ordered by age, most recent comments first')
+  });
