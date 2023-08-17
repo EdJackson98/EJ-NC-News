@@ -286,7 +286,9 @@ describe("PATCH: /api/articles/:article_id", () => {
 
 describe("DELETE: /api/comments/:comment_id", () => {
   test("204 responds with a 204 to confirm deletion", () => {
-    return request(app).delete("/api/comments/3").expect(204);
+    return request(app)
+      .delete("/api/comments/3")
+      .expect(204)
   });
   test("404 responds with appropriate error message when passed a valid but non-existent comment_id", () => {
     return request(app)
