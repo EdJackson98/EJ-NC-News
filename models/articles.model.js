@@ -15,22 +15,6 @@ exports.fetchArticleByID = (article_id) => {
         });
 }
 
-// exports.fetchCommentsByArticle = (article_id) => {
-//     return db
-//         .query(`SELECT * FROM comments WHERE comments.article_id=$1 ORDER BY created_at ASC`, [article_id])
-//         .then((result) => {
-//             const comments = result.rows
-//             console.log(comments)
-//             if(comments.length === 0){
-//                 return Promise.reject({
-//                     status: 404,
-//                     msg: `No article found for article id: ${article_id}`
-//                 })
-//             }
-//         return comments
-//         });
-// }
-
 exports.fetchCommentsByArticle = (article_id) => {
     return db
         .query(`SELECT * FROM comments WHERE comments.article_id=$1 ORDER BY created_at ASC`, [article_id])
@@ -52,4 +36,11 @@ exports.checkIDExists = (article_id) => {
             })
         }
     });
+}
+
+exports.fetchAllArticles = () => {
+    let query = 'SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC;'
+    return db.query(query).then((result) => {
+        return result.rows;
+    })
 }
