@@ -110,9 +110,10 @@ describe('POST /api/articles/:article_id/comments', () => {
             .then((response) => {
                 expect(response.body.comment.author).toBe(testComment.username);
                 expect(response.body.comment.body).toBe(testComment.body);
+                expect(response.body.comment.article_id).toBe(1)
             });
     });
-    test('404: returns appropriate error message when passed an invalid article ID', () => {
+    test('404: returns appropriate error message when passed a valid but non-existent article ID', () => {
         const testComment = {
             username: 'butter_bridge',
             body: 'Test comment',
@@ -135,6 +136,19 @@ describe('POST /api/articles/:article_id/comments', () => {
             .expect(400)
             .then((response) => {
                 expect(response.body.msg).toBe('Bad Request: Missing field');
+            });
+    });
+    test('400: returns an error when a passed an invalid ID', () => {
+        const testComment = {
+            username: 'butter_bridge',
+            body: 'test_comment',
+        };
+        return request(app)
+            .post('/api/articles/bananas/comments')
+            .send(testComment)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Invalid ID');
             });
     });
 });
