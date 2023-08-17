@@ -151,3 +151,60 @@ describe('/api/articles', () => {
         })
     })
 })
+
+describe('POST /api/articles/:article_id/comments', () => {
+    test('200: adds a comment with corresponding article_id', () => {
+        const testComment = {
+            username: 'butter_bridge',
+            body: 'Test comment',
+        };
+        return request(app)
+            .post('/api/articles/1/comments')
+            .send(testComment)
+            .expect(201)
+            .then((response) => {
+                expect(response.body.comment.author).toBe(testComment.username);
+                expect(response.body.comment.body).toBe(testComment.body);
+                expect(response.body.comment.article_id).toBe(1)
+            });
+    });
+    test('404: returns appropriate error message when passed a valid but non-existent article ID', () => {
+        const testComment = {
+            username: 'butter_bridge',
+            body: 'Test comment',
+        };
+        return request(app)
+            .post('/api/articles/888/comments')
+            .send(testComment)
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toBe(`No article found for article id: 888`);
+            });
+    });
+    test('400: returns an error when a required field is missing in the comment', () => {
+        const incompleteComment = {
+            username: 'butter_bridge',
+        };
+        return request(app)
+            .post('/api/articles/1/comments')
+            .send(incompleteComment)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad Request: Missing field');
+            });
+    });
+    test('400: returns an error when a passed an invalid ID', () => {
+        const testComment = {
+            username: 'butter_bridge',
+            body: 'test_comment',
+        };
+        return request(app)
+            .post('/api/articles/bananas/comments')
+            .send(testComment)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Invalid ID');
+            });
+    });
+});
+
