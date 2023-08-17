@@ -1,5 +1,5 @@
 
-const { fetchArticleByID, fetchAllArticles, insertComment, checkIDExists } = require("../models/articles.model")
+const { fetchArticleByID, fetchAllArticles, fetchCommentsByArticle, checkIDExists, insertComment } = require("../models/articles.model")
 
 exports.getArticleByID = (req, res, next) => {
     const { article_id } = req.params;
@@ -29,4 +29,21 @@ exports.postCommentByArticle = (req, res, next) => {
         })
         .catch(next);
 };
+
+  exports.getCommentsByArticle = (req, res, next) => {
+    const { article_id } = req.params;
+    checkIDExists(article_id)
+        .then(() => fetchCommentsByArticle(article_id))
+        .then((comments) => {
+            if (comments.length === 0) {
+                res.status(200).send({ msg: `No comments found on article id: ${article_id}`});
+            } else {
+                res.status(200).send({ comments });
+            }
+        })
+      .catch((err) => {
+        next(err)
+      });
+  };
+
 

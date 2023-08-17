@@ -73,6 +73,61 @@ describe("GET: /api/articles/:article_id", () => {
     })
 })
 
+describe('/api/article/:article_id/comments', () => {
+    test('GET:200 sends an array of comments to the user by article_id', () => {
+      return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then((response) => {
+            const { comments } = response.body;
+            expect(comments).toEqual(expect.any(Array));
+            comments.forEach((comment) => {
+              expect(comment).toEqual(expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                article_id: 1
+              }));
+            });
+          });
+      });
+    test('GET:200 sends an empty array when there are no comments for the article_id', () => {
+        return request(app)
+          .get('/api/articles/2/comments')
+          .expect(200)
+          .then((response) => {
+            expect(response.body.msg).toBe('No comments found on article id: 2')
+          });
+      });
+    test('GET:404 sends an appropriate error message when given a valid but non-existent id', () => {
+      return request(app)
+        .get('/api/articles/999/comments')
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toBe('No article found for article id: 999');
+        });
+    });
+    test('GET:400 sends an appropriate error message when given an invalid ID', () => {
+        return request(app)
+        .get('/api/articles/banana/comments')
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('Invalid ID');
+          });
+    })
+    test('comments should return, ordered by created_at, ascendingly', () => {
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then(({body}) => {
+            const { comments } = body
+            expect(comments).toBeSortedBy('created_at', {ascendingly: true})
+        })
+    })
+  });
+
 describe('/api/articles', () => {
     test('GET:200 sends an array of article objects with the correct keys', () => {
       return request(app)
@@ -152,3 +207,4 @@ describe('POST /api/articles/:article_id/comments', () => {
             });
     });
 });
+
