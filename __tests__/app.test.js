@@ -98,7 +98,7 @@ describe('/api/articles', () => {
 })
 
 describe('POST /api/articles/:article_id/comments', () => {
-    test('adds a comment with corresponding article_id', () => {
+    test('200: adds a comment with corresponding article_id', () => {
         const testComment = {
             username: 'butter_bridge',
             body: 'Test comment',
@@ -110,6 +110,31 @@ describe('POST /api/articles/:article_id/comments', () => {
             .then((response) => {
                 expect(response.body.comment.author).toBe(testComment.username);
                 expect(response.body.comment.body).toBe(testComment.body);
+            });
+    });
+    test('404: returns appropriate error message when passed an invalid article ID', () => {
+        const testComment = {
+            username: 'butter_bridge',
+            body: 'Test comment',
+        };
+        return request(app)
+            .post('/api/articles/888/comments')
+            .send(testComment)
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toBe(`No article found for article id: 888`);
+            });
+    });
+    test('400: returns an error when a required field is missing in the comment', () => {
+        const incompleteComment = {
+            username: 'butter_bridge',
+        };
+        return request(app)
+            .post('/api/articles/1/comments')
+            .send(incompleteComment)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad Request: Missing field');
             });
     });
 });
