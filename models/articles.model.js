@@ -24,13 +24,13 @@ exports.fetchAllArticles = () => {
 
 exports.insertComment = (article_id, username, body) => {
     console.log(article_id, username, body, 'model')
-    return db
-        .query(
-            `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;`,
-            [article_id, username, body]
-        )
+        const query =
+        `INSERT INTO comments (article_id, author, body) VALUES ($1,$2, $3) RETURNING *; `
+        const values = [article_id, username, body];
+        return db.query(query, values)
         .then((result) => {
             console.log(result.rows[0], 'model result')
             return result.rows[0];
         });
 };
+

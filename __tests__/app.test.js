@@ -97,10 +97,10 @@ describe('/api/articles', () => {
     })
 })
 
-describe.skip('POST /api/articles/:article_id/comments', () => {
+describe('POST /api/articles/:article_id/comments', () => {
     test('adds a comment with corresponding article_id', () => {
         const testComment = {
-            username: 'test_user',
+            username: 'butter_bridge',
             body: 'Test comment',
         };
         return request(app)
