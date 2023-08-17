@@ -81,7 +81,7 @@ describe("GET: /api/articles/:article_id", () => {
       .get("/api/articles/banana")
       .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe("Invalid ID");
+        expect(response.body.msg).toBe("Bad request");
       });
   });
 });
@@ -129,7 +129,7 @@ describe("/api/article/:article_id/comments", () => {
       .get("/api/articles/banana/comments")
       .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe("Invalid ID");
+        expect(response.body.msg).toBe("Bad request");
       });
   });
   test("comments should return, ordered by created_at, ascendingly", () => {
@@ -183,13 +183,13 @@ describe("POST /api/articles/:article_id/comments", () => {
       body: "Test comment",
     };
     return request(app)
-      .post("/api/articles/1/comments")
+      .post("/api/articles/13/comments")
       .send(testComment)
       .expect(201)
       .then((response) => {
         expect(response.body.comment.author).toBe(testComment.username);
         expect(response.body.comment.body).toBe(testComment.body);
-        expect(response.body.comment.article_id).toBe(1);
+        expect(response.body.comment.article_id).toBe(13);
       });
   });
   test("404: returns appropriate error message when passed a valid but non-existent article ID", () => {
@@ -227,7 +227,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(testComment)
       .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe("Invalid ID");
+        expect(response.body.msg).toBe("Bad request");
       });
   });
 });
@@ -262,6 +262,16 @@ describe("PATCH: /api/articles/:article_id", () => {
           expect(response.body.msg).toBe(`No article found for article id: 777`);
         });
     });
+
+    test("PATCH: 400 sends an appropriate error message when given an invalid article id", () => {
+        return request(app)
+          .patch("/api/articles/banana")
+          .send({ inc_votes: 5 })
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe(`Bad request`);
+          });
+      });
   
     test("PATCH: 400 sends an appropriate error message when given an invalid vote value", () => {
       return request(app)
@@ -269,7 +279,7 @@ describe("PATCH: /api/articles/:article_id", () => {
         .send({ inc_votes: "banana" })
         .expect(400)
         .then((response) => {
-          expect(response.body.msg).toBe("Invalid vote value. Please provide a valid number.");
+          expect(response.body.msg).toBe("Bad request");
         });
     });
   });

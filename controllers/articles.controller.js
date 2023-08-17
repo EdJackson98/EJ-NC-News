@@ -4,7 +4,7 @@ const {
   fetchCommentsByArticle,
   checkIDExists,
   insertComment,
-  updateArticleVotes
+  updateArticleVotes,
 } = require("../models/articles.model");
 
 exports.getArticleByID = (req, res, next) => {
@@ -54,18 +54,16 @@ exports.getCommentsByArticle = (req, res, next) => {
 };
 
 exports.updateArticleByID = (req, res, next) => {
-    const { article_id } = req.params;
-    const { inc_votes } = req.body;
-    if (typeof inc_votes !== 'number') {
-        return next({
-            status: 400,
-            msg: 'Invalid vote value. Please provide a valid number.'
-        });
-    }
-    checkIDExists(article_id)
-    .then(() => updateArticleVotes(article_id, inc_votes))
-    .then((updatedArticle) => {
-        res.status(200).send({ article: updatedArticle})
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+  checkIDExists(article_id)
+    .then(() => {
+      return updateArticleVotes(article_id, inc_votes);
     })
-    .catch(next)
+    .then((updatedArticle) => {
+      res.status(200).send({ article: updatedArticle })
+    })
+    .catch((err) => {
+        next(err)
+    })
 };
