@@ -233,53 +233,75 @@ describe("POST /api/articles/:article_id/comments", () => {
 });
 
 describe("PATCH: /api/articles/:article_id", () => {
-    test("200: Responds with the updated article object", () => {
-      return request(app)
-        .patch("/api/articles/1")
-        .send({ inc_votes: 5 })
-        .expect(200)
-        .then((response) => {
-          expect(response.body.article).toHaveProperty(
-            "author",
-            "title",
-            "article_id",
-            "body",
-            "topic",
-            "created_at",
-            "votes",
-            "article_img_url"
-          );
-          expect(response.body.article.votes).toBe(105);
-        });
-    });
-  
-    test("PATCH: 404 sends an appropriate error message when given a valid but non-existent id", () => {
-      return request(app)
-        .patch("/api/articles/777")
-        .send({ inc_votes: 5 })
-        .expect(404)
-        .then((response) => {
-          expect(response.body.msg).toBe(`No article found for article id: 777`);
-        });
-    });
-
-    test("PATCH: 400 sends an appropriate error message when given an invalid article id", () => {
-        return request(app)
-          .patch("/api/articles/banana")
-          .send({ inc_votes: 5 })
-          .expect(400)
-          .then((response) => {
-            expect(response.body.msg).toBe(`Bad request`);
-          });
+  test("200: Responds with the updated article object", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 5 })
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article).toHaveProperty(
+          "author",
+          "title",
+          "article_id",
+          "body",
+          "topic",
+          "created_at",
+          "votes",
+          "article_img_url"
+        );
+        expect(response.body.article.votes).toBe(105);
       });
-  
-    test("PATCH: 400 sends an appropriate error message when given an invalid vote value", () => {
-      return request(app)
-        .patch("/api/articles/1")
-        .send({ inc_votes: "banana" })
-        .expect(400)
-        .then((response) => {
-          expect(response.body.msg).toBe("Bad request");
-        });
-    });
   });
+
+  test("PATCH: 404 sends an appropriate error message when given a valid but non-existent id", () => {
+    return request(app)
+      .patch("/api/articles/777")
+      .send({ inc_votes: 5 })
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe(`No article found for article id: 777`);
+      });
+  });
+
+  test("PATCH: 400 sends an appropriate error message when given an invalid article id", () => {
+    return request(app)
+      .patch("/api/articles/banana")
+      .send({ inc_votes: 5 })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe(`Bad request`);
+      });
+  });
+
+  test("PATCH: 400 sends an appropriate error message when given an invalid vote value", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "banana" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("DELETE: /api/comments/:comment_id", () => {
+  test("204 responds with a 204 to confirm deletion", () => {
+    return request(app).delete("/api/comments/3").expect(204);
+  });
+  test("404 responds with appropriate error message when passed a valid but non-existent comment_id", () => {
+    return request(app)
+      .delete("/api/comments/999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("No comment found for comment id: 999");
+      });
+  });
+  test("400 responds with appropriate error message when passed an invalid comment id", () => {
+    return request(app)
+      .delete("/api/comments/banana")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+});

@@ -61,9 +61,9 @@ exports.updateArticleByID = (req, res, next) => {
       return updateArticleVotes(article_id, inc_votes);
     })
     .then((updatedArticle) => {
-      res.status(200).send({ article: updatedArticle })
+      res.status(200).send({ article: updatedArticle });
     })
     .catch((err) => {
-        next(err)
-    })
+      next(err);
+    });
 };
