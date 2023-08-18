@@ -174,6 +174,71 @@ describe("/api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
+  // CURRENTLY WORKING ON BELOW
+  test("GET:200 sends an array of article objects with the correct keys and topic filter", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles).toEqual(expect.any(Array));
+        expect(response.body.articles.length).toBe(12);
+        expect(Object.keys(response.body.articles[0])).toEqual(
+          expect.arrayContaining([
+            "author",
+            "title",
+            "article_id",
+            "topic",
+            "created_at",
+            "votes",
+            "article_img_url",
+            "comment_count",
+          ])
+        );
+      });
+  })
+  test("GET:200 sends an array of article objects sorted by specified column in ascending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeSortedBy("votes", { ascending: true });
+      });
+  });
+  test("GET:200 sends an empty array and a 200 when passed a valid topic with no articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles.length).toBe(0);
+      });
+    })
+  test("GET:400 returns an error for invalid sort query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=invalid_column")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+  
+  test("GET:400 returns an error for invalid order query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=created_at&order=invalid_order")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+  test("GET:404 returns an error when topic filter doesn't match any articles", () => {
+    return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Topic not found");
+      });
+  });
 });
 
 describe("POST /api/articles/:article_id/comments", () => {

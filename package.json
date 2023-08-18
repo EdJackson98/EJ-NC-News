@@ -5,6 +5,7 @@
   "main": "listen.js",
   "scripts": {
     "start": "node listen.js",
+    "playground": "psql -f playground.sql > playground-sql.txt",
     "seed-prod": "NODE_ENV=production npm run seed",
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
