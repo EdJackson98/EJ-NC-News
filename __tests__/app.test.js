@@ -284,6 +284,18 @@ describe("PATCH: /api/articles/:article_id", () => {
   });
 });
 
+describe("/api/users", () => {
+  test("GET:200 sends an array of user objects with the correct keys", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.users).toEqual(expect.any(Array));
+        expect(response.body.users.length).toBe(4);
+        expect(Object.keys(response.body.users[0])).toEqual(
+          expect.arrayContaining(["username", "name", "avatar_url"])
+        );
+      
 describe("DELETE: /api/comments/:comment_id", () => {
   test("204 responds with a 204 to confirm deletion", () => {
     return request(app)
