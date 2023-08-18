@@ -84,6 +84,7 @@ describe("GET: /api/articles/:article_id", () => {
         expect(response.body.article).toHaveProperty(
           "comment_count"
         );
+        expect(Number(response.body.article.comment_count)).toBe(11)
     });
   });
   test("GET:400 sends an appropriate and error message when given an invalid id", () => {
@@ -184,7 +185,7 @@ describe("/api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
-  // CURRENTLY WORKING ON BELOW
+
   test("GET:200 sends an array of article objects with the correct keys and topic filter", () => {
     return request(app)
       .get("/api/articles?topic=mitch")
