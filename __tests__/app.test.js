@@ -76,6 +76,16 @@ describe("GET: /api/articles/:article_id", () => {
         expect(response.body.msg).toBe(`Article ID not found`);
       });
   });
+  test("200: Responds with an article with comment_count key", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article).toHaveProperty(
+          "comment_count"
+        );
+    });
+  });
   test("GET:400 sends an appropriate and error message when given an invalid id", () => {
     return request(app)
       .get("/api/articles/banana")
