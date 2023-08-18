@@ -41,7 +41,7 @@
         "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
     }
   },
-  "GET /api/articles/article_id/comments": {
+  "GET /api/articles/:article_id/comments": {
     "description": "serves an array of comment objects, containing all comments on the given article (by ID)",
     "queries": [],
     "exampleResponse":   {
@@ -52,5 +52,33 @@
         "body": "Comment content",
         "article_id": 5
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a comment to the given article id, comments must be in the form {username: exampleUsername, body: testComment}. The given username must have a corresponding user in the Users table",
+    "queries": [],
+    "exampleResponse":   {
+        "author": "butter_bridge",
+        "body": "Comment content",
+        "article_id": 5
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "updates the vote property of the given article id by the given property inc_vote property. Requests must be in the form {inc_votes: 5}",
+    "queries": [],
+    "exampleResponse":   {
+        "author": "butter_bridge",
+        "title": "exampleTitle",
+        "body": "Comment content",
+        "article_id": 5,
+        "topic": "cooking",
+        "created_at": "1604394720000",
+        "votes": 5,
+        "article_img_url": 5
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "deletes the comment for the given comment id",
+    "queries": [],
+    "exampleResponse": "will respond with the relevant status code and no content"
   }
 }
