@@ -41,14 +41,52 @@ exports.checkIDExists = (article_id) => {
     });
 };
 
-exports.fetchAllArticles = () => {
-  let query =
+const checkTopicExists = (topic) => {
+  return db
+  .query(`SELECT * FROM topics WHERE slug=$1;`, [topic])
+  .then((result) => {
+    const topic = result.rows[0];
+    if (!topic) {
+      return Promise.reject({
+        status: 404,
+        msg: `Topic not found`,
+      });
+    }
+  })
+}
+
+exports.fetchAllArticles = (sort_by = 'created_at', order = 'desc', topic) => {
+  const queryValues = [];
+  const allowedSortColumns = ['created_at', 'votes'];
+  const allowedOrders = ['asc', 'desc'];
+  let queryStr =
     `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count
     FROM articles 
-    LEFT JOIN comments ON articles.article_id = comments.article_id 
-    GROUP BY articles.article_id 
-    ORDER BY articles.created_at DESC;`;
-  return db.query(query).then((result) => {
+    LEFT JOIN comments ON articles.article_id = comments.article_id`;
+
+  if (topic) {
+      return checkTopicExists(topic)
+      .then(() => {
+        queryValues.push(topic)
+        queryStr += ` WHERE articles.topic = $1 
+        GROUP BY articles.article_id
+        ORDER BY ${sort_by} ${order};`;
+        return db.query(queryStr, queryValues)
+      })
+      .then((result) => {
+        return result.rows
+      })
+  }
+
+  if (!allowedSortColumns.includes(sort_by) || !allowedOrders.includes(order)) {
+    return Promise.reject({ status: 400, msg: 'Bad request' });
+  }
+
+  queryStr += `
+    GROUP BY articles.article_id
+    ORDER BY ${sort_by} ${order}`;
+
+  return db.query(queryStr, queryValues).then((result) => {
     return result.rows;
   });
 };

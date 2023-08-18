@@ -5,6 +5,7 @@ const {
   checkIDExists,
   insertComment,
   updateArticleVotes,
+  checkTopicExists
 } = require("../models/articles.model");
 
 exports.getArticleByID = (req, res, next) => {
@@ -17,7 +18,8 @@ exports.getArticleByID = (req, res, next) => {
 };
 
 exports.getAllArticles = (req, res, next) => {
-  fetchAllArticles()
+  const {sort_by, order, topic} = req.query
+  fetchAllArticles(sort_by, order, topic)
     .then((articles) => {
       res.status(200).send({ articles });
     })
