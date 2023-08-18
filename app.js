@@ -10,6 +10,7 @@ const {
   updateArticleByID
 } = require("./controllers/articles.controller");
 const { getEndpoints } = require("./controllers/endpoints.controller");
+const { deleteCommentByID } = require('./controllers/comments.controller')
 
 const {
   handleCustomErrors,
@@ -26,6 +27,7 @@ app.get("/api/articles", getAllArticles);
 app.post("/api/articles/:article_id/comments", postCommentByArticle);
 app.get("/api/articles/:article_id/comments", getCommentsByArticle);
 app.patch('/api/articles/:article_id', updateArticleByID);
+app.delete("/api/comments/:comment_id", deleteCommentByID)
 
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
