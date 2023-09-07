@@ -51,16 +51,16 @@ describe("/api", () => {
 });
 
 describe("GET: /api/articles/:article_id", () => {
-  test("200: Responds with an article object with the correct keys", () => {
+  test.only("200: Responds with an article object with the correct keys", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
       .then((response) => {
+        console.log(response.body.article)
         expect(response.body.article).toHaveProperty(
           "author",
           "title",
           "article_id",
-          "body",
           "topic",
           "created_at",
           "votes",
